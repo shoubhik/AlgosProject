@@ -32,7 +32,12 @@ package com.ncsu.project;
  *
  ***************************************************************/
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
 
 public class RabinKarp {
@@ -114,11 +119,14 @@ public class RabinKarp {
     }
 
     // test client
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String pat = "and";
         String txt = "nand nand";
         char[] pattern = pat.toCharArray();
         char[] text    = txt.toCharArray();
+
+        byte[] encoded = Files.readAllBytes(Paths.get("input1.txt"));
+        Charset encoding = StandardCharsets.US_ASCII;
 
         RabinKarp searcher = new RabinKarp(pat);
         searcher.search(txt);
