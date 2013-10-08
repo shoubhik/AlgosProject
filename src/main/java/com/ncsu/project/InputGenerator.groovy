@@ -140,7 +140,7 @@ defined to be words (arhrd, arpro and arop) which are sent
 most significant byte first (Ethernet/PDP-10 byte style)."""
 
 println System.getProperty("user.dir")
-def sizes  = [100,150,200,300,500]
+def sizes  = [150,200,250,300,500]
 sizes.each{
     def inputFile = new File("input1_${it}mb.txt")
     while(inputFile.length()/(1024*1024) < it)

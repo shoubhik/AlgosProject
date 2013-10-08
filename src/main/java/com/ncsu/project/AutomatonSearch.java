@@ -14,9 +14,11 @@ import java.nio.file.Paths;
  */
 public class AutomatonSearch {
 
-    private static long match = 0;
+    private long match = 0;
+    private long comparisons ;
+    private Graph aut;
 
-    static void preAut(char x[], Graph g){
+    void preAut(char x[], Graph g){
         int state, i;
        for(state = g.getInitial(), i=0;i<x.length; ++i){
            int oldTarget = g.getTarget(state, x[i]);
@@ -28,29 +30,47 @@ public class AutomatonSearch {
        g.setTerminal(state);
     }
 
-    public static void Aut(char x[], char y[]) {
-        Graph aut = Graph.newAutomaton(x.length+1, (x.length+1)*256);
+    public void createAutomata(char pattern[]){
+        aut = Graph.newAutomaton(pattern.length+1, (pattern.length+1)*256);
+        preAut(pattern,aut);
+    }
+
+    public void Aut(/*char pattern[],*/ char text[]) {
+
         int j, state;
-        preAut(x,aut);
-        for(state=aut.getInitial(), j=0; j<y.length; ++j){
-            state = aut.getTarget(state, y[j]);
-            if(aut.isTerminal(state)) match++;
+        for(state=aut.getInitial(), j=0; j<text.length; ++j){
+            state = aut.getTarget(state, text[j]);
+            if(aut.isTerminal(state)){
+                match++;
+            }
+            comparisons++; // comparison is made everytime
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        char x[] = new String("several").toCharArray();
-        String y = "nand nand";
-        long startRead = System.currentTimeMillis();
-        byte[] encoded = Files.readAllBytes(Paths.get("input1_100mb.txt"));
-        Charset encoding = StandardCharsets.US_ASCII;
-        y = encoding.decode(ByteBuffer.wrap(encoded)).toString();
-        long endRead = System.currentTimeMillis();
-        System.out.println("Total time to read = " + (endRead-startRead));
-        long start = System.currentTimeMillis();
-        Aut(x, y.toCharArray());
-        long end = System.currentTimeMillis();
-        System.out.println("time taken = " + (end-start));
-        System.out.println("Number of matches = " + match);
+    public long getComparisons() {
+        return comparisons;
     }
+
+    public AutomatonSearch(){
+        comparisons = 0;
+    }
+
+    public long getMatch() {
+        return match;
+    }
+//    public static void main(String[] args) throws IOException {
+//        char x[] = new String("several").toCharArray();
+//        String y = "nand nand";
+//        long startRead = System.currentTimeMillis();
+//        byte[] encoded = Files.readAllBytes(Paths.get("input1_100mb.txt"));
+//        Charset encoding = StandardCharsets.US_ASCII;
+//        y = encoding.decode(ByteBuffer.wrap(encoded)).toString();
+//        long endRead = System.currentTimeMillis();
+//        System.out.println("Total time to read = " + (endRead-startRead));
+//        long start = System.currentTimeMillis();
+//        Aut(x, y.toCharArray());
+//        long end = System.currentTimeMillis();
+//        System.out.println("time taken = " + (end-start));
+//        System.out.println("Number of matches = " + match);
+//    }
 }

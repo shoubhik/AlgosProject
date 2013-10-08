@@ -47,6 +47,8 @@ public class RabinKarp {
     private long Q;          // a large prime, small enough to avoid long overflow
     private int R;           // radix
     private long RM;         // R^(M-1) % Q
+    private long match;
+    private long comparison;
 
     public RabinKarp(int R, char[] pattern) {
         throw new UnsupportedOperationException("Operation not supported yet");
@@ -89,11 +91,12 @@ public class RabinKarp {
     // check for exact match
     public void search(String txt) {
         int N = txt.length();
-        if (N < M) System.out.println(-1);  ;
+        if (N < M) return  ;
         long txtHash = hash(txt, M);
 
         // check for match at offset 0
-        if ((patHash == txtHash) && check(txt, 0)) System.out.println(0);
+        comparison++;
+        if ((patHash == txtHash) && check(txt, 0)) match++;
 
         // check for hash match; if hash match, check for exact match
         for (int i = M; i < N; i++) {
@@ -103,12 +106,13 @@ public class RabinKarp {
 
             // match
             int offset = i - M + 1;
+            comparison++;
             if ((patHash == txtHash) && check(txt, offset))
-                System.out.println(offset);
+                match++;
         }
 
         // no match
-        System.out.println(-1);;
+//        System.out.println(-1);;
     }
 
 
@@ -121,17 +125,11 @@ public class RabinKarp {
     // test client
     public static void main(String[] args) throws IOException {
         String pat = "and";
-        String txt = "nand nand";
-        char[] pattern = pat.toCharArray();
-        char[] text    = txt.toCharArray();
+        String txt = "nand nandand";
 
-        byte[] encoded = Files.readAllBytes(Paths.get("input1.txt"));
-        Charset encoding = StandardCharsets.US_ASCII;
 
         RabinKarp searcher = new RabinKarp(pat);
         searcher.search(txt);
-//
-//        System.out.println("offset :"  + offset);
 
         // print results
         System.out.println("text:    " + txt);
@@ -141,5 +139,13 @@ public class RabinKarp {
 //        for (int i = 0; i < offset; i++)
 //            System.out.println(" ");
         System.out.println(pat);
+    }
+
+    public long getMatch() {
+        return match;
+    }
+
+    public long getComparison() {
+        return comparison;
     }
 }
